@@ -51,3 +51,62 @@ double Geo::distance(const PointList &treck)
     return dist;
 }
 
+double Geo::avrSpeed_kmh(const Geo::PointList &treck)
+{
+    return avrSpeed_ms(treck) * 3.6;
+}
+
+double Geo::avrSpeed_kmh(const Geo::PointData &pos1, const Geo::PointData &pos2)
+{
+    PointList treck;
+    treck << pos1 << pos2;
+    return avrSpeed_kmh(treck);
+}
+
+double Geo::avrPace(const Geo::PointList &treck)
+{
+    double pace(0);
+    time_t time = timeSec(treck);
+    double dist = distance(treck);
+    if(time > 0 && dist > 0) {
+        pace = (time / 60) / (dist / 1000);
+    }
+    return pace;
+}
+
+double Geo::avrPace(const Geo::PointData &pos1, const Geo::PointData &pos2)
+{
+    PointList treck;
+    treck << pos1 << pos2;
+    return avrPace(treck);
+}
+
+time_t Geo::timeSec(const Geo::PointList &treck)
+{
+    time_t time(0);
+    if(!treck.isEmpty()) {
+        time_t firstSek = treck.first().dt.toTime_t();
+        time_t lastSek = treck.last().dt.toTime_t();
+        time = lastSek - firstSek;
+    }
+    return time;
+}
+
+double Geo::avrSpeed_ms(const Geo::PointList &treck)
+{
+    double speed(0);
+    if(!treck.isEmpty()) {
+        double dist = distance(treck);
+        time_t dSec = timeSec(treck);
+        speed = dSec > 0 ? (dist / dSec) : 0;
+    }
+    return speed;
+}
+
+double Geo::avrSpeed_ms(const Geo::PointData &pos1, const Geo::PointData &pos2)
+{
+    PointList treck;
+    treck << pos1 << pos2;
+    return avrSpeed_ms(treck);
+}
+

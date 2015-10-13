@@ -18,10 +18,15 @@ void MainWindow::on_pushButton_clicked()
 {
     GpxParse xml("files/treck.gpx");
     if(!xml.outMsg().isEmpty()){
-        QString msg = xml.outMsg();
-        ui->textBrowser->setText(msg);
-        QString dist = QString("%1").arg(Geo::distance(xml.treckData()));
-        ui->label->setText(dist);
+        QString info = xml.outMsg();
+        ui->GpxInfo->setText(info);
+
+        QString statistic = QString("Расстояние:\t %1 м \n").arg(Geo::distance(xml.treckData()));
+        statistic += QString("Ср. скорость:\t %1 км/ч \n").arg(Geo::avrSpeed_kmh(xml.treckData()));
+        statistic += QString("Ср. скорость:\t %1 м/c  \n").arg(Geo::avrSpeed_ms(xml.treckData()));
+        statistic += QString("Ср. темп:\t %1 мин/км \n").arg(Geo::avrPace(xml.treckData()));
+
+        ui->GpxStatistic->setText(statistic);
 
     }
 }

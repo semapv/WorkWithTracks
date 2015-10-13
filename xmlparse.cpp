@@ -91,12 +91,16 @@ QString GpxParse::fillMsg(const Geo::PointList &elms) const
 {
     QString str;
     if(!elms.isEmpty()) {
+        Geo::PointData preData;
         foreach(Geo::PointData data, elms) {
                 str += QString("%1* %2").arg(str.isEmpty() ? "" : "\n")
-                        .arg(QString("lo:%1\t la:%2\t t:%3")
+                        .arg(QString("lo:%1\t la:%2\t t:%3\t d:%4 м\t s:%5 км/ч")
                              .arg(data.longitude)
                              .arg(data.latitude)
-                             .arg(data.dt.toString()));
+                             .arg(data.dt.toString())
+                             .arg(preData.isValid() ? Geo::distance(preData, data) : 0)
+                             .arg(preData.isValid() ? Geo::avrSpeed_kmh(preData, data) : 0));
+                preData = data;
         }
     }
     return str;
